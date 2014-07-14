@@ -1,6 +1,6 @@
 Predmachlearn assignment
 ========================
 
-To see the markdown, click here: 
+To see the compiled markdown, see [my report](https://bplank.github.io/predmachlearn/). 
 
 (install knitr package for RStudio to generate compiled markdown)

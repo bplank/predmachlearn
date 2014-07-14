@@ -2,7 +2,7 @@
 ===================================
 
 Initial setup.
-```{r}
+```{r loading-stuff}
 library(caret)
 library(ggplot2)
 set.seed(88388)
@@ -12,7 +12,7 @@ setwd("/Users/bplank/courses/predmachlearn/assignment/predmachlearn")
 
 Read training data and plot some statistics, e.g.,  frequency of classes (A through E). The task is to predict activity classes from accelerator measurements of participants performing barbell exercises.
 
-```{r cachedChunk,cache=TRUE}
+```{r freqplot,cache=TRUE}
 trainRaw=read.table("data/pml-training.csv",header=TRUE,sep=",")  
 barplot(table(trainRaw$classe),xlab="classe",ylab="counts",main="Classes")
 dim(trainRaw)
@@ -24,14 +24,14 @@ The training file is rather balanced (more of class A, but not very skewed) and 
 
 We now remove all data columns which consist of more than 90% NAs. The data set has now a much lower dimension (93 columns).
 
-```{r}
+```{r NAs}
 train=trainRaw[,colSums(is.na(trainRaw))<(nrow(trainRaw)*0.9)]
 dim(train)
 ```
 
 For the remaining columns, we inspect them with ```str``` to remove those that make less sense (i.e., counters, meta-data, time-related columns).
 
-```{r}
+```{r remove cols}
 #names(train)
 str(train)
 #remove columns
@@ -42,7 +42,7 @@ dim(train)
 
 We are now down to 67 columns. Inspect again and make sure that all columns are in the right format, otherwise cast them. 
 
-```{r}
+```{r cast}
 train$kurtosis_roll_belt=as.numeric(train$kurtosis_roll_belt)
 train$kurtosis_picth_belt=as.numeric(train$kurtosis_picth_belt)
 train$skewness_roll_belt=as.numeric(train$skewness_roll_belt)
@@ -65,7 +65,7 @@ Now the train data is in the right format, and lets train models.
 
 We now split the data into parts, and for initial inspection train models only on a random sample of 1000 train and 1000 dev instances to select which method to take. We use Naive Bayes (NB) as baseline method. Since the measurements are clearly not independent, we expect it to work badly. We expect random forests to work well, and compare them to support vector machines (SVM) with a linear and polynomial kernel. 
 
-```{r cache=TRUE}
+```{r initial-models,cache=TRUE}
 inTrain <- createDataPartition(train$classe, p=0.7,list=FALSE) #same as [[1]] instead of list=FALSE
 length(inTrain)
 inTrain=sample(inTrain,size=1000,replace=FALSE) #subset for testing
@@ -93,13 +93,13 @@ In fact, the worst model is naive Bayes (NB). The best model is -- as expected -
 ## Feature selection
 We now want to find the top-20 features of the RF model and train on the whole data set partition.
 
-```{r}
+```{r inspect}
 varImp(model)
 ```
 
 Lets plot some of these features to get a feeling how well they distinguish the classes.
 
-```{r}
+```{r qplot}
 qplot(magnet_dumbbell_z,pitch_forearm,data=training,color=classe)
 ```
 
