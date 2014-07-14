@@ -300,6 +300,12 @@ varImp(model)
 ```
 
 ```
+## Loading required package: randomForest
+## randomForest 4.6-7
+## Type rfNews() to see new features/changes/bug fixes.
+```
+
+```
 ## rf variable importance
 ## 
 ##   only 20 most important variables shown (out of 66)
@@ -338,7 +344,7 @@ qplot(magnet_dumbbell_z,pitch_forearm,data=training,color=classe)
 
 The figure above shows that, for instance, class A and D are nicely separable using this two variables.
 
-Use only the top-20 features to train an RF model.
+We now use only the top-20 features to train an RF model.
 ```
 inTrain <- createDataPartition(train$classe, p=0.7,list=FALSE) #same as [[1]] instead of list=FALSE
 length(inTrain)
@@ -348,7 +354,7 @@ training=subset(training,select=c(roll_belt,pitch_forearm,magnet_dumbbell_z,magn
 testing=subset(testing,select=c(roll_belt,pitch_forearm,magnet_dumbbell_z,magnet_dumbbell_y,yaw_belt,pitch_belt,roll_forearm,magnet_dumbbell_x,roll_dumbbell,magnet_belt_z,accel_forearm_x,accel_dumbbell_y,gyros_dumbbell_y,roll_arm,magnet_belt_x,accel_belt_z,magnet_belt_y,accel_dumbbell_z,magnet_forearm_x ,magnet_forearm_x,total_accel_dumbbell,classe))
 dim(training)
 ```
-Gets the same accuracy (88.9%) but is faster to train (takes 2/3 of the time). We will use this set of features with RF for our final model.
+We get the same accuracy (88.9%) but this is faster to train (takes 2/3 of the time). We will use this set of features with RF for our final model.
 
 So far we have trained models on only a subset of the data. To get an estimate of the out-of-sample error we train a random forest model on the whole training data using cross-validation. 
 
@@ -363,7 +369,7 @@ This takes quite some time to finish, nevertheless, from the cross validation ac
 
 ## Final model 
 
-Now we train the final model on the entire trainig data set.
+Now we train the final model using the seleted features on the entire training data set and evaluate it on the test set of 20 instances.
 
 ```
 model=train(classe~.,data=training,method="rf")
